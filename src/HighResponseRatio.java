@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -44,40 +45,50 @@ public class HighResponseRatio extends JPanel implements ActionListener {
                     Thread.sleep(1000);
                     time++;
                     Work temp=null;
+                    Work work=null;
+                    int listLength=0;
                     while(true){
-                        if(findWork()!=null){
-                            Work work=findWork();
+                        while (findWork()!=null){
+                            work=findWork();
                             temp=work;
-                            if(work.done<work.length){
+                            while(work.done<work.length){
+                                work.setFlag("CPU执行");
                                 work.run();
-//                                if(findWork().name==work.name){
-////                                    work.setFlag("就绪");
-//                                    work.setFlag("CPU执行");
-//                                }else {
-////                                    work.setFlag("CPU执行");
-//                                    work.setFlag("就绪");
-//                                }
-                            }else if(work.done==work.length){
-                                work.setFlag("已完成");
+                                updateTable();
+                                Thread.sleep(1000);
+                                time++;
                             }
+                            work.setFlag("已完成");
+//                            if(work.done<work.length){
+//                                work.run();
+////                                if(findWork().name==work.name){
+//////                                    work.setFlag("就绪");
+////                                    work.setFlag("CPU执行");
+////                                }else {
+//////                                    work.setFlag("CPU执行");
+////                                    work.setFlag("就绪");
+////                                }
+//                            }else if(work.done==work.length){
+//                                work.setFlag("已完成");
+//                            }
                         }
                         updateTable();
                         Thread.sleep(1000);
                         time++;
-                        if(temp!=null){
-                            if(temp.done<temp.length){
-                                if(findWork().name==temp.name){
-//                                    work.setFlag("就绪");
-                                    temp.setFlag("CPU执行");
-                                }else {
-//                                    work.setFlag("CPU执行");
-                                    temp.setFlag("就绪");
-                                }
-                            }else if(temp.done==temp.length){
-                                temp.setFlag("已完成");
-                            }
-                        }
-                        updateTable();
+//                        if(temp!=null){
+//                            if(temp.done<temp.length){
+//                                if(findWork().name==temp.name){
+////                                    work.setFlag("就绪");
+//                                    temp.setFlag("CPU执行");
+//                                }else {
+////                                    work.setFlag("CPU执行");
+//                                    temp.setFlag("就绪");
+//                                }
+//                            }else if(temp.done==temp.length){
+//                                temp.setFlag("已完成");
+//                            }
+//                        }
+//                        updateTable();
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -87,6 +98,7 @@ public class HighResponseRatio extends JPanel implements ActionListener {
         thread.start();
     }
     private void updateTable(){
+        updateRatio();
         data.clear();
         for(int i=0;i<list.size();i++){
             Vector<Object> v = new Vector<Object>();
@@ -136,17 +148,20 @@ public class HighResponseRatio extends JPanel implements ActionListener {
             float getTime=Integer.parseInt(work.getTime);
             float length= work.length;
             float ratio=(1+((time_temp-getTime)/length))*100;
-            System.out.println(Integer.toString(i)+"   "+Float.toString(ratio));
             work.setRatio((int)ratio);
         }
     }
     private void init(){
         Box baseBox = Box.createVerticalBox();     //根盒子
         baseBox.setSize(5000, 200);
-
+//        JLabel bannerLabel = new JLabel("高响应比优先调度");
+//        baseBox.add(bannerLabel);
 //        baseBox.add(bannerLabel);
         //-------------------容器内容------------------------------
         JPanel showPanel = new JPanel();
+        TitledBorder inputPanelBorder = new TitledBorder("高响应比优先调度");
+        inputPanelBorder.setTitleFont(defaultFont);
+        showPanel.setBorder(inputPanelBorder);
         Box vtemp = Box.createVerticalBox();
         Box htemp1 = Box.createHorizontalBox();
         Box htemp2 = Box.createHorizontalBox();

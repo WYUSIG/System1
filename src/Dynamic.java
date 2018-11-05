@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -45,40 +46,59 @@ public class Dynamic extends JPanel implements ActionListener {
                 try {
                     Thread.sleep(1000);
                     time++;
+                    int listLength=0;
                     Work temp=null;
+                    Work work=null;
                     while(true){
-                        if(findWork()!=null){
-                            Work work=findWork();
-                            temp=work;
-                            if(work.done<work.length){
-                                work.run();
-//                                if(findWork().name==work.name){
-////                                    work.setFlag("就绪");
-//                                    work.setFlag("CPU执行");
-//                                }else {
-////                                    work.setFlag("CPU执行");
-//                                    work.setFlag("就绪");
-//                                }
-                            }else if(work.done==work.length){
-                                work.setFlag("已完成");
+                        if(list.size()!=listLength){
+                            if(temp!=null){
+                                if(temp.done<temp.length){
+                                    temp.setFlag("就绪");
+                                    temp.run();
+                                }else if(temp.done==temp.length){
+                                    temp.setFlag("已完成");
+                                }
+                            }
+                            if(findWork()!=null){
+                                work=findWork();
+                                listLength=list.size();
+                                if(work.done<work.length){
+                                    work.setFlag("CPU执行");
+                                    work.run();
+                                }else if(work.done==work.length){
+                                    work.setFlag("已完成");
+                                }
+                            }
+                        }else {
+                            if(work!=null){
+                                temp=work;
+                                listLength=list.size();
+                                if(work.done<work.length){
+                                    work.setFlag("CPU执行");
+                                    work.run();
+                                }else if(work.done==work.length){
+                                    work.setFlag("已完成");
+                                    work=findWork();
+                                }
                             }
                         }
+
                         updateTable();
                         Thread.sleep(1000);
                         time++;
-                        if(temp!=null){
-                            if(temp.done<temp.length){
-                                if(findWork().name==temp.name){
-//                                    work.setFlag("就绪");
-                                    temp.setFlag("CPU执行");
-                                }else {
-//                                    work.setFlag("CPU执行");
-                                    temp.setFlag("就绪");
-                                }
-                            }else if(temp.done==temp.length){
-                                temp.setFlag("已完成");
-                            }
-                        }
+//                        if(temp!=null){
+//                            if(temp.done<temp.length){
+//                                if(findWork().name==temp.name){
+////                                    work.setFlag("就绪");
+//                                    temp.setFlag("CPU执行");
+//                                }else {
+////                                    work.setFlag("CPU执行");
+//                                    temp.setFlag("就绪");
+//                                }
+//                            }else if(temp.done==temp.length){
+//                                temp.setFlag("已完成");
+//                            }
+//                        }
                         updateTable();
                     }
                 } catch (InterruptedException e) {
@@ -135,10 +155,12 @@ public class Dynamic extends JPanel implements ActionListener {
     private void init(){
         Box baseBox = Box.createVerticalBox();     //根盒子
         baseBox.setSize(5000, 200);
-
 //        baseBox.add(bannerLabel);
         //-------------------容器内容------------------------------
         JPanel showPanel = new JPanel();
+        TitledBorder inputPanelBorder = new TitledBorder("动态优先级调度");
+        inputPanelBorder.setTitleFont(defaultFont);
+        showPanel.setBorder(inputPanelBorder);
         Box vtemp = Box.createVerticalBox();
         Box htemp1 = Box.createHorizontalBox();
         Box htemp2 = Box.createHorizontalBox();

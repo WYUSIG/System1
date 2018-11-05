@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -121,23 +122,28 @@ public class TimeFilm extends JPanel implements ActionListener {
     private void init(){
         Box baseBox = Box.createVerticalBox();     //根盒子
         baseBox.setSize(5000, 200);
-
+//        JLabel bannerLabel = new JLabel("时间片调度");
+//        baseBox.add(bannerLabel);
 //        baseBox.add(bannerLabel);
         //-------------------容器内容------------------------------
         JPanel showPanel = new JPanel();
+        TitledBorder inputPanelBorder = new TitledBorder("时间片调度");
+        inputPanelBorder.setTitleFont(defaultFont);
+        showPanel.setBorder(inputPanelBorder);
         Box vtemp = Box.createVerticalBox();
         Box htemp1 = Box.createHorizontalBox();
         Box htemp2 = Box.createHorizontalBox();
         //新建作业
         createButton=new JButton("新建作业");
         createButton.addActionListener(this);
-        jLabel = new JLabel("每个作业的长度都为50-100之间的随机值:");
+        jLabel = new JLabel("每个作业的长度都为50-100之间的随机值,时间片为10:");
         jLabel.setFont(defaultFont);
         htemp1.add(createButton);
         htemp1.add(Box.createHorizontalStrut(50));//创建间隔
         htemp1.add(jLabel);
         //表格
         table = new JTable(model);                     //把模型对象作为参数构造表格对象，这样就可以用表格显示出数据
+        table .getTableHeader().setReorderingAllowed(false);
         DefaultTableCellRenderer   r   =   new DefaultTableCellRenderer();
         r.setHorizontalAlignment(JLabel.CENTER);
         table.setDefaultRenderer(Object.class,   r);
